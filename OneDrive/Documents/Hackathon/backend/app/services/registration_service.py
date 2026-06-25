@@ -30,9 +30,6 @@ class RegistrationService:
         if not hackathon:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Hackathon not found")
         
-        if hackathon.status != HackathonStatus.REGISTRATION_OPEN:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Hackathon registration is not open")
-
         now = datetime.now(timezone.utc)
         if now < hackathon.registration_start_date or now > hackathon.registration_end_date:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Hackathon registration is closed")

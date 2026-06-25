@@ -92,10 +92,10 @@ export const HackathonDetailPage: React.FC = () => {
                )}
                <div className="flex-grow"></div>
                <button 
-                  disabled={hackathon.status !== "REGISTRATION_OPEN"}
+                  disabled={!hackathon.is_registration_open}
                   className="w-full sm:w-auto px-8 py-3 bg-indigo-600 text-white font-bold rounded-full shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                  {hackathon.status === "REGISTRATION_OPEN" ? "Register Now" : "Registration Closed"}
+                  {hackathon.is_registration_open ? "Register Now" : "Registration Closed"}
                </button>
             </div>
           </div>

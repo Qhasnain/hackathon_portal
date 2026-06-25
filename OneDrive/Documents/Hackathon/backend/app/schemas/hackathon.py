@@ -1,6 +1,6 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional, Generic, TypeVar
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field, model_validator, computed_field
 import uuid
 
 from app.models.enums import HackathonStatus, HackathonMode
@@ -70,6 +70,12 @@ class HackathonResponse(HackathonBase):
     created_by: uuid.UUID
     created_at: datetime
     updated_at: datetime
+
+    @computed_field
+    @property
+    def is_registration_open(self) -> bool:
+        now = datetime.now(timezone.utc)
+        return self.registration_start_date <= now <= self.registration_end_date
 
     class Config:
         from_attributes = True

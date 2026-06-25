@@ -22,6 +22,7 @@ export interface Hackathon {
   registration_end_date: string;
   submission_deadline: string;
   status: HackathonStatus;
+  is_registration_open?: boolean;
   max_teams: number | null;
   is_featured: boolean;
   banner_image: string | null;
