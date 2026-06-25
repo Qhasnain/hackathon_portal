@@ -24,7 +24,7 @@ class ProblemStatementService:
         search: Optional[str] = None,
         hackathon_id: Optional[uuid.UUID] = None,
         is_published: Optional[bool] = None,
-    ) -> ProblemStatementListResponse:
+    ) -> Dict[str, Any]:
         query = select(ProblemStatement)
 
         if search:
@@ -52,13 +52,13 @@ class ProblemStatementService:
 
         total_pages = math.ceil(total / page_size) if total > 0 else 1
 
-        return ProblemStatementListResponse(
-            items=list(items),
-            total=total,
-            page=page,
-            page_size=page_size,
-            total_pages=total_pages,
-        )
+        return {
+            "items": items,
+            "total": total,
+            "page": page,
+            "page_size": page_size,
+            "total_pages": total_pages,
+        }
 
     def create(self, db: Session, obj_in: ProblemStatementCreate) -> ProblemStatement:
         if self.get_by_code(db, obj_in.problem_code):

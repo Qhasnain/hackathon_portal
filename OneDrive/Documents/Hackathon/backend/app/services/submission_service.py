@@ -62,7 +62,7 @@ class SubmissionService:
         registration_id: Optional[uuid.UUID] = None,
         problem_statement_id: Optional[uuid.UUID] = None,
         status: Optional[SubmissionStatus] = None
-    ) -> SubmissionListResponse:
+    ) -> dict:
         query = select(Submission)
 
         if registration_id:
@@ -84,12 +84,12 @@ class SubmissionService:
         items = db.execute(query).scalars().all()
         total_pages = (total + page_size - 1) // page_size if total > 0 else 1
 
-        return SubmissionListResponse(
-            items=list(items),
-            total=total,
-            page=page,
-            page_size=page_size,
-            total_pages=total_pages,
-        )
+        return {
+            "items": items,
+            "total": total,
+            "page": page,
+            "page_size": page_size,
+            "total_pages": total_pages,
+        }
 
 submission_service = SubmissionService()

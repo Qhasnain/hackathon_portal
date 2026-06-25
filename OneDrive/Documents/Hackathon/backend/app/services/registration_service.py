@@ -87,7 +87,7 @@ class RegistrationService:
         hackathon_id: Optional[uuid.UUID] = None,
         user_id: Optional[uuid.UUID] = None,
         status: Optional[RegistrationStatus] = None
-    ) -> RegistrationListResponse:
+    ) -> dict:
         query = select(Registration)
 
         if search:
@@ -112,12 +112,12 @@ class RegistrationService:
         items = db.execute(query).scalars().all()
         total_pages = (total + page_size - 1) // page_size if total > 0 else 1
 
-        return RegistrationListResponse(
-            items=list(items),
-            total=total,
-            page=page,
-            page_size=page_size,
-            total_pages=total_pages,
-        )
+        return {
+            "items": items,
+            "total": total,
+            "page": page,
+            "page_size": page_size,
+            "total_pages": total_pages,
+        }
 
 registration_service = RegistrationService()
