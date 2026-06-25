@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { hackathonService } from "@/services/hackathon.service";
 import { problemStatementService } from "@/services/problem-statement.service";
 import PageLoader from "@/components/ui/PageLoader";
 import StatusBadge from "@/components/ui/StatusBadge";
+import RegistrationModal from "@/components/RegistrationModal";
 
 export const HackathonDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
+  const [isRegistrationModalOpen, setIsRegistrationModalOpen] = useState(false);
 
   const { data: hackathon, isLoading, isError } = useQuery({
     queryKey: ["hackathon", slug],
@@ -92,6 +94,7 @@ export const HackathonDetailPage: React.FC = () => {
                )}
                <div className="flex-grow"></div>
                <button 
+                  onClick={() => setIsRegistrationModalOpen(true)}
                   disabled={!hackathon.is_registration_open}
                   className="w-full sm:w-auto px-8 py-3 bg-indigo-600 text-white font-bold rounded-full shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
@@ -156,6 +159,12 @@ export const HackathonDetailPage: React.FC = () => {
           </div>
         )}
       </div>
+
+      <RegistrationModal 
+        isOpen={isRegistrationModalOpen} 
+        onClose={() => setIsRegistrationModalOpen(false)} 
+        initialHackathonId={hackathon.id}
+      />
     </div>
   );
 };
