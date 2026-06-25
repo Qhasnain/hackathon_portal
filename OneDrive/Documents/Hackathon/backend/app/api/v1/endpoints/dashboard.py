@@ -7,7 +7,7 @@ from app.models.user import User
 from app.models.hackathon import Hackathon
 from app.models.registration import Registration
 from app.models.submission import Submission
-from app.api.deps import get_current_active_admin
+from app.api.deps import get_current_active_admin, get_current_user
 from app.schemas.response import success_response
 from app.models.enums import HackathonStatus
 
@@ -46,4 +46,35 @@ def get_dashboard_stats(
             "submission_open": submission_open,
             "closed": closed
         }
+    })
+
+@router.get("/student-stats")
+def get_student_stats(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Get live statistics for the Student Dashboard.
+    """
+    my_registrations = db.execute(select(func.count(Registration.id)).where(Registration.user_id == current_user.id)).scalar_one()
+    
+    # Submissions are linked to registrations, so we find all registrations for this user, then count submissions for them.
+    my_submissions = db.execute(
+        select(func.count(Submission.id))
+        .join(Registration, Submission.registration_id == Registration.id)
+        .where(Registration.user_id == current_user.id)
+    ).scalar_one()
+
+    # Active hackathons user is registered in
+    active_hackathons = db.execute(
+        select(func.count(func.distinct(Registration.hackathon_id)))
+        .join(Hackathon, Registration.hackathon_id == Hackathon.id)
+        .where(Registration.user_id == current_user.id)
+        .where(Hackathon.status.in_([HackathonStatus.UPCOMING, HackathonStatus.REGISTRATION_OPEN, HackathonStatus.SUBMISSION_OPEN]))
+    ).scalar_one()
+
+    return success_response(data={
+        "my_registrations": my_registrations,
+        "my_submissions": my_submissions,
+        "active_hackathons": active_hackathons,
     })

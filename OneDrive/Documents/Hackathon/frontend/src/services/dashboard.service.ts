@@ -13,9 +13,19 @@ export interface DashboardStats {
   };
 }
 
+export interface StudentStats {
+  my_registrations: number;
+  my_submissions: number;
+  active_hackathons: number;
+}
+
 export const dashboardService = {
   async getStats(): Promise<DashboardStats> {
     const response = await apiClient.get<{ data: DashboardStats }>("/dashboard/stats");
+    return response.data.data;
+  },
+  async getStudentStats(): Promise<StudentStats> {
+    const response = await apiClient.get<{ data: StudentStats }>("/dashboard/student-stats");
     return response.data.data;
   }
 };
