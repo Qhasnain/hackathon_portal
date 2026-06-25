@@ -24,8 +24,16 @@ export default function RegistrationPage() {
   const [teamName, setTeamName] = useState("");
 
   const { data: hackathonsData } = useQuery({
-    queryKey: ["hackathons", { status: "REGISTRATION_OPEN" }],
-    queryFn: () => hackathonService.getAll({ status: "REGISTRATION_OPEN" as any }),
+    queryKey: ["hackathons", "open_for_registration"],
+    queryFn: async () => {
+      // Fetch a larger page size to ensure we get active ones
+      const response = await hackathonService.getAll({ page_size: 100 });
+      // Filter dynamically computed state
+      return {
+        ...response,
+        items: response.items.filter((h) => h.is_registration_open)
+      };
+    },
     enabled: isModalOpen,
   });
 
@@ -44,6 +52,7 @@ export default function RegistrationPage() {
     onSuccess: () => {
       toast.success("Successfully registered team!");
       queryClient.invalidateQueries({ queryKey: ["myRegistrations"] });
+      queryClient.invalidateQueries({ queryKey: ["studentDashboardStats"] });
       setIsModalOpen(false);
       setTeamName("");
       setSelectedHackathon("");
@@ -203,7 +212,7 @@ export default function RegistrationPage() {
                 </button>
                 <button
                   type="submit"
-                  disabled={createMutation.isPending}
+                  disabled={createMutation.isPending || !selectedHackathon || !selectedProblem || !teamName}
                   className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-xl hover:bg-indigo-700 disabled:opacity-50"
                 >
                   {createMutation.isPending ? "Registering..." : "Submit Registration"}
