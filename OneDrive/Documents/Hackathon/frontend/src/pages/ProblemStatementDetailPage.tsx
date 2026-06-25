@@ -8,8 +8,8 @@ export const ProblemStatementDetailPage: React.FC = () => {
   const { slug, id } = useParams<{ slug: string; id: string }>();
 
   const { data: problem, isLoading } = useQuery({
-    queryKey: ["studentProblemStatement", id],
-    queryFn: () => problemStatementService.getById(id!),
+    queryKey: ["studentProblemStatement", slug, id],
+    queryFn: () => problemStatementService.getForHackathonById(slug!, id!),
   });
 
   if (isLoading) return <PageLoader />;

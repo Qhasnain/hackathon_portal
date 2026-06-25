@@ -86,4 +86,9 @@ export const problemStatementService = {
     const response = await apiClient.get<PaginatedResponse<ProblemStatement>>(`/hackathons/${slug}/problem-statements`, { params });
     return response.data;
   },
+
+  getForHackathonById: async (slug: string, id: string) => {
+    const response = await apiClient.get<ProblemStatement>(`/hackathons/${slug}/problem-statements/${id}`);
+    return response.data;
+  },
 };

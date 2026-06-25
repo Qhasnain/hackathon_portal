@@ -114,3 +114,26 @@ def get_hackathon_problem_statements(
         hackathon_id=hackathon.id,
         is_published=True,
     )
+
+@router.get("/{slug}/problem-statements/{problem_id}", response_model=ProblemStatementResponse)
+def get_hackathon_problem_statement_details(
+    slug: str,
+    problem_id: uuid.UUID,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Get a specific published problem statement. Open to all students.
+    """
+    hackathon = hackathon_service.get_hackathon_by_slug(db, slug)
+    if not hackathon:
+        raise HTTPException(status_code=404, detail="Hackathon not found")
+        
+    from app.services.problem_statement_service import problem_statement_service
+    problem = problem_statement_service.get(db, problem_id)
+    
+    if not problem or problem.hackathon_id != hackathon.id or not problem.is_published:
+        raise HTTPException(status_code=404, detail="Problem statement not found")
+        
+    return problem
+
