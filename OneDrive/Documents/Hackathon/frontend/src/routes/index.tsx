@@ -22,6 +22,7 @@ const AdminHackathonFormPage = lazy(() => import("@/pages/admin/HackathonFormPag
 const AdminProblemStatementListPage = lazy(() => import("@/pages/admin/ProblemStatementListPage"));
 const AdminProblemStatementFormPage = lazy(() => import("@/pages/admin/ProblemStatementFormPage"));
 const AdminRegistrationListPage = lazy(() => import("@/pages/admin/RegistrationListPage"));
+const AdminSubmissionListPage = lazy(() => import("@/pages/admin/SubmissionListPage"));
 const ProblemStatementDetailPage = lazy(() => import("@/pages/ProblemStatementDetailPage"));
 const ProfilePage = lazy(() => import("@/pages/ProfilePage"));
 const NotFoundPage = lazy(() => import("@/pages/NotFoundPage"));
@@ -134,6 +135,10 @@ export const router = createBrowserRouter([
           {
             path: "registrations",
             element: withSuspense(<AdminRegistrationListPage />),
+          },
+          {
+            path: "submissions",
+            element: withSuspense(<AdminSubmissionListPage />),
           },
         ],
       },
