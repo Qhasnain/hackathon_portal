@@ -32,8 +32,8 @@ const adminLinks: SidebarLink[] = [
   { to: ROUTES.ADMIN_DASHBOARD, label: "Dashboard", icon: LayoutDashboard },
   { to: ROUTES.ADMIN_HACKATHONS, label: "Hackathons", icon: Trophy },
   { to: ROUTES.ADMIN_PROBLEM_STATEMENTS, label: "Problem Statements", icon: FileUp },
-  { to: "#", label: "Registrations", icon: ClipboardList, comingSoon: true },
-  { to: "#", label: "Submissions", icon: FileUp, comingSoon: true },
+  { to: ROUTES.ADMIN_REGISTRATIONS, label: "Registrations", icon: ClipboardList },
+  { to: ROUTES.ADMIN_SUBMISSIONS, label: "Submissions", icon: FileUp },
   { to: "#", label: "Teams", icon: Users, comingSoon: true },
   { to: "#", label: "Analytics", icon: BarChart, comingSoon: true },
 ];

@@ -14,6 +14,8 @@ export const ROUTES = {
   ADMIN_PROBLEM_STATEMENTS: "/admin/problem-statements",
   ADMIN_PROBLEM_STATEMENT_CREATE: "/admin/problem-statements/create",
   ADMIN_PROBLEM_STATEMENT_EDIT: (id: string) => `/admin/problem-statements/${id}/edit`,
+  ADMIN_REGISTRATIONS: "/admin/registrations",
+  ADMIN_SUBMISSIONS: "/admin/submissions",
   STUDENT_HACKATHON_DETAIL: (slug: string) => `/student/hackathons/${slug}`,
   STUDENT_PROBLEM_STATEMENT_DETAIL: (slug: string, id: string) => `/student/hackathons/${slug}/problems/${id}`,
 } as const;

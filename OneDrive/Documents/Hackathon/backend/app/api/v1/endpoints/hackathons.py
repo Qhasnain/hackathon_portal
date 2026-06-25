@@ -12,7 +12,7 @@ from app.schemas.hackathon import (
     HackathonResponse,
     PaginatedResponse
 )
-from app.schemas.problem_statement import ProblemStatementListResponse
+from app.schemas.problem_statement import ProblemStatementListResponse, ProblemStatementResponse
 from app.api.deps import get_current_user, get_current_active_admin
 from app.services import hackathon_service
 from app.schemas.response import success_response
