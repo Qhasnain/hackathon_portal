@@ -7,6 +7,7 @@ import { problemStatementService } from "@/services/problem-statement.service";
 import type { ProblemStatement } from "@/services/problem-statement.service";
 import { DataTable } from "@/components/ui/DataTable";
 import type { ColumnDef } from "@/components/ui/DataTable";
+import EmptyState from "@/components/ui/EmptyState";
 
 export const ProblemStatementListPage: React.FC = () => {
   const queryClient = useQueryClient();
@@ -41,24 +42,29 @@ export const ProblemStatementListPage: React.FC = () => {
     {
       header: "Code",
       accessorKey: "problem_code",
-      cell: (item) => <span className="font-mono text-sm">{item.problem_code}</span>,
+      cell: (item) => (
+        <span className="inline-flex items-center rounded-md bg-slate-100 px-2 py-1 text-xs font-medium text-slate-600 ring-1 ring-inset ring-slate-500/10 dark:bg-slate-800 dark:text-slate-400 dark:ring-slate-700/50">
+          {item.problem_code}
+        </span>
+      ),
     },
     {
       header: "Title",
       accessorKey: "title",
+      cell: (item) => <span className="font-medium text-slate-900 dark:text-slate-100">{item.title}</span>,
     },
     {
       header: "Difficulty",
       accessorKey: "difficulty",
       cell: (item) => {
         const difficultyColors: Record<string, string> = {
-          EASY: "bg-green-100 text-green-800",
-          MEDIUM: "bg-yellow-100 text-yellow-800",
-          HARD: "bg-red-100 text-red-800",
+          EASY: "bg-emerald-50 text-emerald-700 ring-emerald-600/20 dark:bg-emerald-500/10 dark:text-emerald-400 dark:ring-emerald-500/20",
+          MEDIUM: "bg-amber-50 text-amber-700 ring-amber-600/20 dark:bg-amber-500/10 dark:text-amber-400 dark:ring-amber-500/20",
+          HARD: "bg-rose-50 text-rose-700 ring-rose-600/20 dark:bg-rose-500/10 dark:text-rose-400 dark:ring-rose-500/20",
         };
-        const colorClass = difficultyColors[item.difficulty] || "bg-gray-100 text-gray-800";
+        const colorClass = difficultyColors[item.difficulty] || "bg-slate-50 text-slate-600 ring-slate-500/10";
         return (
-          <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${colorClass}`}>
+          <span className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ring-1 ring-inset ${colorClass}`}>
             {item.difficulty}
           </span>
         );
@@ -67,12 +73,17 @@ export const ProblemStatementListPage: React.FC = () => {
     {
       header: "Category",
       accessorKey: "category",
+      cell: (item) => <span className="text-slate-600 dark:text-slate-400">{item.category}</span>,
     },
     {
       header: "Status",
       accessorKey: "is_published",
       cell: (item) => (
-        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${item.is_published ? 'bg-indigo-100 text-indigo-800' : 'bg-gray-100 text-gray-800'}`}>
+        <span className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ring-1 ring-inset ${
+          item.is_published 
+            ? 'bg-blue-50 text-blue-700 ring-blue-600/20 dark:bg-blue-500/10 dark:text-blue-400 dark:ring-blue-500/20' 
+            : 'bg-slate-50 text-slate-600 ring-slate-500/10 dark:bg-slate-800 dark:text-slate-400 dark:ring-slate-700/50'
+        }`}>
           {item.is_published ? 'Published' : 'Draft'}
         </span>
       ),
@@ -81,10 +92,10 @@ export const ProblemStatementListPage: React.FC = () => {
       header: "Actions",
       accessorKey: "id",
       cell: (item) => (
-        <div className="flex space-x-3 text-sm">
+        <div className="flex items-center gap-3">
           <Link
             to={`/admin/problem-statements/${item.id}/edit`}
-            className="text-indigo-600 hover:text-indigo-900"
+            className="text-sm font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 transition-colors"
           >
             Edit
           </Link>
@@ -94,15 +105,20 @@ export const ProblemStatementListPage: React.FC = () => {
                 deleteMutation.mutate(item.id);
               }
             }}
-            className="text-red-600 hover:text-red-900"
+            className="text-sm font-medium text-rose-600 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300 transition-colors"
           >
             Delete
           </button>
+          <div className="h-4 w-px bg-slate-200 dark:bg-slate-700" />
           <button
             onClick={() => {
               togglePublishMutation.mutate({ id: item.id, publish: !item.is_published });
             }}
-            className={`${item.is_published ? 'text-gray-600 hover:text-gray-900' : 'text-green-600 hover:text-green-900'}`}
+            className={`text-sm font-medium transition-colors ${
+              item.is_published 
+                ? 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200' 
+                : 'text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300'
+            }`}
           >
             {item.is_published ? "Unpublish" : "Publish"}
           </button>
@@ -134,11 +150,26 @@ export const ProblemStatementListPage: React.FC = () => {
           />
         </div>
 
-        <DataTable
-          data={data?.items || []}
-          columns={columns}
-          isLoading={isLoading}
-        />
+        {!isLoading && data?.items?.length === 0 ? (
+          <EmptyState
+            title="No Problem Statements"
+            description={search ? "No problem statements found matching your search." : "Get started by creating a new problem statement."}
+            action={!search ? (
+              <Link
+                to="/admin/problem-statements/create"
+                className="inline-flex items-center justify-center rounded-md border border-transparent bg-primary-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-primary-700 transition-colors"
+              >
+                Create Problem Statement
+              </Link>
+            ) : undefined}
+          />
+        ) : (
+          <DataTable
+            data={data?.items || []}
+            columns={columns}
+            isLoading={isLoading}
+          />
+        )}
         
         {data && data.total_pages > 1 && (
           <div className="mt-4 flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
