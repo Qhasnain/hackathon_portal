@@ -84,8 +84,18 @@ def delete_hackathon(db: Session, hackathon_id: uuid.UUID) -> None:
     if not db_hackathon:
         raise HTTPException(status_code=404, detail="Hackathon not found")
     
-    db.delete(db_hackathon)
-    db.commit()
+    try:
+        db.delete(db_hackathon)
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        import sqlalchemy.exc
+        if isinstance(e, sqlalchemy.exc.IntegrityError):
+            raise HTTPException(
+                status_code=400, 
+                detail="Cannot delete this hackathon because it has active registrations, submissions, or problem statements linked to it."
+            )
+        raise e
 
 def get_hackathons(
     db: Session,

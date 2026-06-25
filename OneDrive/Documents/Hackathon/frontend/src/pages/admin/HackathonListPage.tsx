@@ -26,11 +26,10 @@ export const HackathonListPage: React.FC = () => {
       toast.success("Hackathon deleted successfully");
       queryClient.invalidateQueries({ queryKey: ["adminHackathons"] });
       queryClient.invalidateQueries({ queryKey: ["adminDashboardStats"] });
-      setDeleteModalOpen(false);
     },
-    onError: () => {
-      toast.error("Failed to delete hackathon");
+    onSettled: () => {
       setDeleteModalOpen(false);
+      setSelectedHackathon(null);
     }
   });
 
