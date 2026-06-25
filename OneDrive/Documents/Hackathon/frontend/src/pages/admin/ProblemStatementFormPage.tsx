@@ -67,8 +67,9 @@ export const ProblemStatementFormPage: React.FC = () => {
   const createMutation = useMutation({
     mutationFn: problemStatementService.create,
     onSuccess: () => {
-      toast.success("Problem statement created successfully");
+      toast.success(`Problem statement ${isEditing ? 'updated' : 'created'} successfully`);
       queryClient.invalidateQueries({ queryKey: ["adminProblemStatements"] });
+      queryClient.invalidateQueries({ queryKey: ["hackathonProblems"] });
       navigate("/admin/problem-statements");
     },
     onError: (err: any) => {
@@ -81,6 +82,7 @@ export const ProblemStatementFormPage: React.FC = () => {
     onSuccess: () => {
       toast.success("Problem statement updated successfully");
       queryClient.invalidateQueries({ queryKey: ["adminProblemStatements"] });
+      queryClient.invalidateQueries({ queryKey: ["hackathonProblems"] });
       queryClient.invalidateQueries({ queryKey: ["problemStatement", id] });
       navigate("/admin/problem-statements");
     },

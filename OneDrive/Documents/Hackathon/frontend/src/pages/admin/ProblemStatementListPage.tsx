@@ -34,6 +34,7 @@ export const ProblemStatementListPage: React.FC = () => {
     onSuccess: () => {
       toast.success("Publish status updated");
       queryClient.invalidateQueries({ queryKey: ["adminProblemStatements"] });
+      queryClient.invalidateQueries({ queryKey: ["hackathonProblems"] });
     },
     onError: () => toast.error("Failed to update publish status"),
   });
